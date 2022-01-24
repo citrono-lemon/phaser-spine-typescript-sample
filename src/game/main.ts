@@ -25,6 +25,8 @@ class MainScene extends Phaser.Scene {
    */
   preload(): void {
     console.log("preload")
+    this.load.image("pp", "sd_player.png")
+    this.load.spine("player", "sd_player.json", ["sd_player.atlas"], true)
   }
 
   /**
@@ -33,6 +35,10 @@ class MainScene extends Phaser.Scene {
   create(): void {
     console.log("create")
     this.add.text(10, 10, "Hello, phaser")
+
+    this.add.sprite(200, 400, "pp")
+    this.add.spine(100, 200, "player", "Idle", true).setScale(0.25, 0.25)
+
   }
 
   /**
