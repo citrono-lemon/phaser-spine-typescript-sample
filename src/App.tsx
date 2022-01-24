@@ -1,13 +1,13 @@
-import { CSSProperties, useEffect } from 'react';
-import 'phaser'
-import 'phaser/plugins/spine/dist/SpinePlugin'
 
+import { CSSProperties, useEffect } from 'react';
+// import 'phaser'
+import 'phaser/plugins/spine/dist/SpinePlugin'
 import MainScene from './game/main';
 
 // Phaserの設定
 const config: Phaser.Types.Core.GameConfig = {
-  width: 640,
-  height: 384,
+  width: 1280,
+  height: 720,
   type: Phaser.AUTO,
   pixelArt: false,
   backgroundColor: 0xcdcdcd,
@@ -26,7 +26,7 @@ const config: Phaser.Types.Core.GameConfig = {
   // Spineを使用
   plugins: {
     scene: [
-      { key: 'SpinePlugin', plugin: window.SpinePlugin, mapping: 'spine' }
+      { key: 'SpinePlugin', plugin: SpinePlugin, mapping: 'spine' }
     ]
   }
 }

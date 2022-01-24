@@ -18,17 +18,17 @@
     "resolveJsonModule": true,
     "isolatedModules": true,
     "noEmit": true,
-    "jsx": "react-jsx"
-  },
-  "include": [
-    "src"
-  ],
-  "typeRoots": [
-    "@types",
-    "node_modules/@types",
-    "node_module/phaser/types"
-  ],
-  "types": [
-    "phaser"
-  ]
+    "jsx": "react-jsx",
+    "include": [
+      "src"
+    ],
+    "typeRoots": [
+      "@types",
+      "node_modules/@types",
+      "node_module/phaser/types"
+    ],
+    "types": [
+      "phaser"
+    ]
+  }
 }
