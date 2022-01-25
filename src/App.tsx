@@ -23,6 +23,14 @@ const config: Phaser.Types.Core.GameConfig = {
   // 今回は軽いテストなので、MainSceneのみ
   scene: [MainScene],
 
+  physics: {
+    default: 'arcade',
+    arcade: {
+      gravity: { y: 300 },
+      debug: true
+    }
+  },
+
   // Spineを使用
   plugins: {
     scene: [

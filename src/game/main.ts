@@ -27,7 +27,7 @@ class MainScene extends Phaser.Scene {
     console.log("preload")
     // public/assets へパスを設定する
     this.load.setPath("assets")
-    //this.load.image("pp", "sd_player.png")
+    this.load.image("pp", "sd_player.png")
     this.load.spine("player", "sd_player.json", ["sd_player.atlas"], true)
   }
 
@@ -39,7 +39,14 @@ class MainScene extends Phaser.Scene {
     this.add.text(10, 10, "Hello, phaser")
 
     //this.add.sprite(10, 20, "pp")
-    this.add.spine(100, 200, "player", "Idle", true).setScale(1, 1)
+    const spineObject = this.add.spine(100, 200, "player", "Idle", true).setScale(1, 1)
+    const spinePhysic = this.physics.add.existing(spineObject as any)
+    const ground = this.add.rectangle(0, 630, 1280, 90).setOrigin(0, 0)
+
+    const groundPhysic = this.physics.add.existing(ground, true)
+    this.physics.add.collider(ground, spineObject as any, (gnd, plyr) => {
+
+    }, undefined, this)
   }
 
   /**
