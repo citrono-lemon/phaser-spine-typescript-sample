@@ -1,4 +1,5 @@
 import 'phaser'
+import './SpineContainer'
 
 /**
  * メインシーン
@@ -40,50 +41,61 @@ class MainScene extends Phaser.Scene {
     // 壁
     const offset = 40
     const [W, H] = [this.cameras.main.width, this.cameras.main.height]
-    const platformColor = 0x456789
-    const platform = this.physics.add.staticGroup()
-    platform.addMultiple([
-      this.add.rectangle(0, H - offset, W, H, platformColor).setOrigin(0, 0),
-      this.add.rectangle(0, 0, W, offset, platformColor).setOrigin(0, 0),
-      this.add.rectangle(0, 0, offset, H, platformColor).setOrigin(0, 0),
-      this.add.rectangle(W - offset, 0, offset, H, platformColor).setOrigin(0, 0),
+    const wallColor = 0x456789
+    const wall = this.physics.add.staticGroup()
+    wall.addMultiple([
+      this.add.rectangle(0, 0, W, offset, wallColor).setOrigin(0, 0),
+      this.add.rectangle(0, 0, offset, H, wallColor).setOrigin(0, 0),
+      this.add.rectangle(W - offset, 0, offset, H, wallColor).setOrigin(0, 0),
     ])
+    const platformColor = 0x345678
+    const platform = this.physics.add.staticGroup(
+      this.add.rectangle(0, H - offset, W, H, platformColor).setOrigin(0, 0),
+    )
 
     // プレイヤー
-    const playerPos = { x: 240, y: 500 }
-    const spineObject = this.add.spine(playerPos.x, playerPos.y, "player", "Idle2", true)
-      .setScale(1, 1)
-      //.setSize(40, 100, playerPos.x - 20, H - playerPos.y - 100 - 5)
-      .setMix("Idle2", "Jump", 0.3)
-      .setMix("Idle2", "Walk", 0.3)
-      .setMix("Walk", "Jump", 0.3)
-      .setMix("Jump", "Idle2", 0.3)
+    const spineObject = this.add.spineContainer(100, 100, "player", "Idle2", true)
+    spineObject.spine.setScale(1, 1)
+      .setMix("Idle2", "Jump", 0.1)
+      .setMix("Idle2", "Walk", 0.1)
+      .setMix("Walk", "Jump", 0.1)
+      .setMix("Jump", "Idle2", 0.1)
+    const body = spineObject.body as Phaser.Physics.Arcade.Body
+    spineObject.setPhysicsSize(body.width * 0.5, body.height * 0.9)
+
     const player = this.physics.add.group(spineObject)
+    console.log(player)
+
+    // プレイヤーとブロックの衝突を追加
+    this.physics.add.collider(wall, player, undefined, undefined, this)
 
     // プレイヤーと床の衝突を追加
     this.physics.add.collider(platform, player, (plfm, plyr) => {
-      if (spineObject.state.getCurrent(0).animation.name == "Jump") {
-        spineObject.state.setAnimation(0, "Idle2", true)
-        player.setVelocityX(0)
+      if (spineObject.spine.state.getCurrent(0).animation.name == "Jump") {
+        spineObject.spine.state.setAnimation(0, "Idle2", true)
+        const body = plyr.body as Phaser.Physics.Arcade.Body
+        body.setVelocityX(0)
       }
     }, undefined, this)
 
-    // 左右移動ボタンとジャンプの追加
-
+    // 左右移動とジャンプの追加
     this.input.on("pointerdown", (p: Phaser.Input.Pointer) => {
       if (p.position.x > spineObject.x) {
-        spineObject.setScale(1, 1)
+        spineObject.faceDirection(1)
         player.setVelocityX(300)
       }
       else {
-        spineObject.setScale(-1, 1)
-
+        spineObject.faceDirection(-1)
         player.setVelocityX(-300)
       }
-      spineObject.state.setAnimation(0, "Walk", true)
+      if (spineObject.spine.state.getCurrent(0).animation.name != "Jump") {
+        spineObject.spine.state.setAnimation(0, "Walk", true)
+      }
     }).on("pointerup", () => {
-      player.setVelocityY(-500)
-      spineObject.state.setAnimation(0, "Jump", true)
+      if (spineObject.spine.state.getCurrent(0).animation.name != "Jump") {
+        player.setVelocityY(-400)
+        spineObject.spine.state.setAnimation(0, "Jump", true)
+      }
     })
   }
 
